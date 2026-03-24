@@ -22,13 +22,15 @@ daggerheart_tracker/
 ├── display/
 │   ├── renderer.py          # Draws the full scene each frame
 │   ├── gem_animator.py      # Sprite sheet loading, frame stepping, animation state
-│   └── layout.py            # Computes screen regions from config values
+│   └── layout.py            # Computes screen regions dynamically from window size
 ├── assets/
 │   ├── sprites/
 │   │   ├── fear_gem.png     # Fear gem sprite sheet (all animation frames in one PNG)
 │   │   └── hope_gem.png     # Hope gem sprite sheet
 │   └── fonts/
-│       └── pixel_font.ttf   # Pixel-style font for the counter display
+│       └── pixel_font.ttf   # Pixel-style font for the counter display (optional)
+├── .vscode/
+│   └── launch.json          # VSCode Run and Debug configurations
 └── tests/
     ├── test_game_state.py   # Unit tests for game logic (no Pygame required)
     └── test_input.py        # Unit tests for input translation
@@ -47,35 +49,69 @@ daggerheart_tracker/
 │  ◆ ◇ ◇ ◇ ◇ ◇         ◇ ◇ ◇ ◇ ◇ ◇                      │
 │  ↑ filled  ↑ empty   ↑ filled  ↑ empty                 │
 │                                                         │
-│          ↑ / ↓ Fear        → / ← Hope                  │
-│                        [R] Reset                        │
+│            ↑/↓ Fear   →/← Hope   [R] Reset             │
+│                          [Q] Quit                       │
 └─────────────────────────────────────────────────────────┘
 
 ◆ = filled gem (animated on change)
 ◇ = empty gem slot (static, dimmed)
 ```
 
-The display is split into two vertical halves — Fear (left, gold) and Hope (right, teal). Each half shows a label, a large numeric counter, and a 2-row grid of up to 12 gems.
+The display is split into two vertical halves — Fear (left, gold) and Hope (right, teal). Each half shows a label, a large numeric counter, and a 2-row grid of up to 12 gems. The layout recalculates automatically when the window is resized.
 
-## Requirements
+---
 
-- Python 3.10+
-- pygame
-- RPi.GPIO *(optional — Raspberry Pi hardware only)*
+## Setup
 
-Install dependencies:
+### 1. Prerequisites
 
-```bash
+- Python 3.10 or later — [python.org](https://www.python.org/downloads/)
+- VSCode with the **Python** extension installed
+
+### 2. Create a virtual environment
+
+Open the project folder in VSCode, then open the integrated terminal (`Ctrl+`` `).
+
+```powershell
+python -m venv .venv
+.venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+> **Windows Defender note:** If you see a `Permission denied` error on `.venv\Scripts\python.exe`,
+> add the project folder to Windows Defender's exclusion list:
+> **Windows Security → Virus & threat protection → Exclusions → Add folder**
+> then re-run the commands above.
+
+### 3. Select the interpreter in VSCode
+
+1. Press `Ctrl+Shift+P` and type `Python: Select Interpreter`
+2. Choose the entry showing `.venv`:
+   `Python 3.x.x ('.venv': venv) .\.venv\Scripts\python.exe`
+
+The status bar at the bottom of VSCode will update to show the active interpreter.
+
+---
+
 ## Running the App
+
+### Via Run and Debug (recommended)
+
+1. Press `Ctrl+Shift+D` to open the Run and Debug panel
+2. Select a configuration from the dropdown:
+   - **Run Daggerheart Tracker** — launches `main.py`
+   - **Run Tests** — runs `pytest` across the `tests/` folder
+3. Press `F5` to start
+
+### Via terminal
 
 ```bash
 python main.py
 ```
 
-### Keyboard Controls (Development)
+---
+
+## Keyboard Controls
 
 | Key | Action |
 | --- | --- |
@@ -86,6 +122,8 @@ python main.py
 | `R` | Reset both to 0 |
 | `Q` | Quit |
 
+---
+
 ## Configuration
 
 All configuration lives in `config.py`. This is the **only file that changes** when swapping hardware.
@@ -93,17 +131,23 @@ All configuration lives in `config.py`. This is the **only file that changes** w
 Key settings:
 
 ```python
-SCREEN_WIDTH  = 480     # Match to your display
-SCREEN_HEIGHT = 320
+SCREEN_WIDTH  = 480     # Starting window width (resizable during development)
+SCREEN_HEIGHT = 320     # Starting window height
 FULLSCREEN    = False   # Set True on Pi
+RESIZABLE     = True    # Allow window resizing on laptop; set False on Pi
 
-GEM_SCALE     = 3       # Pixel art scale multiplier
+GEM_SCALE     = 3       # Pixel art scale multiplier (gem size auto-fits the window)
 
 FEAR_MAX      = 12      # Daggerheart standard
 HOPE_MAX      = 12
 
 USE_GPIO      = False   # Set True on Raspberry Pi
 ```
+
+> **Window resizing:** The layout recalculates whenever the window is resized, so gem grids,
+> counters, and labels always scale and reposition correctly. No manual size changes needed.
+
+---
 
 ## Running Tests
 
@@ -113,7 +157,11 @@ The core game logic has no Pygame or GPIO dependencies and can be unit tested on
 python -m pytest tests/
 ```
 
+---
+
 ## Sprite Sheet Specifications
+
+Sprite assets are optional during development — the renderer draws fallback gem shapes automatically when no PNG files are found in `assets/sprites/`.
 
 | Property | Specification |
 | --- | --- |
@@ -126,28 +174,12 @@ python -m pytest tests/
 
 The vanish animation is the appear animation played in reverse — no separate asset needed.
 
-## Build Order
-
-| Step | What to Build | How to Test |
-| --- | --- | --- |
-| 1 | `config.py` | Python import — no errors |
-| 2 | `game_state.py` | Unit tests — no Pygame needed |
-| 3 | `main.py` skeleton | See a black Pygame window |
-| 4 | `input_handler.py` (keyboard) | Print actions to terminal each frame |
-| 5 | `layout.py` | Print computed coordinates |
-| 6 | `renderer.py` (labels and counters only) | See FEAR/HOPE labels and 0/0 on screen |
-| 7 | Wire input → game_state → renderer | Press keys, see counters change |
-| 8 | `gem_animator.py` (static gems first) | See gem grid update on key press |
-| 9 | Add sprite animation | See gem appear/vanish on add/subtract |
-| 10 | GPIO input layer | Set `USE_GPIO=True`, test with buttons |
-| 11 | Autostart systemd service on Pi | Power cycle Pi, app starts automatically |
-
-Steps 1–9 happen entirely on a laptop. Step 10 is the only step that requires hardware.
+---
 
 ## Hardware Deployment (Raspberry Pi)
 
-1. Set `USE_GPIO = True` in `config.py`
-2. Set `FULLSCREEN = True` and update `SCREEN_WIDTH`/`SCREEN_HEIGHT` to match your display
+1. Set `USE_GPIO = True` and `RESIZABLE = False` and `FULLSCREEN = True` in `config.py`
+2. Update `SCREEN_WIDTH` / `SCREEN_HEIGHT` to match your display resolution
 3. Uncomment `RPi.GPIO` in `requirements.txt` and run `pip install -r requirements.txt`
 4. Map GPIO pins in `config.py` to match your wiring:
 
@@ -159,3 +191,5 @@ GPIO_HOPE_SUBTRACT = 23   # D-pad Left
 GPIO_RESET         = 24   # A button
 GPIO_QUIT          = 25   # B button
 ```
+
+Steps 1–9 of the build order happen entirely on a laptop. Step 10 is the only step that requires hardware.

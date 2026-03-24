@@ -1,0 +1,17 @@
+# Virtual environment
+.venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Pytest cache
+.pytest_cache/
+
+# VSCode local settings (keep launch.json, ignore personal/machine-specific files)
+.vscode/settings.json
+.vscode/extensions.json
+
+# OS files
+.DS_Store
+Thumbs.db

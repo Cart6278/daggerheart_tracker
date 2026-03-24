@@ -2,9 +2,9 @@ import config
 
 
 class Layout:
-    def __init__(self):
-        w, h = config.SCREEN_WIDTH, config.SCREEN_HEIGHT
-        pad  = config.GEM_DISPLAY_SIZE          # One gem-width used as padding unit
+    def __init__(self, w: int = None, h: int = None):
+        w    = w or config.SCREEN_WIDTH
+        h    = h or config.SCREEN_HEIGHT
         half = w // 2
 
         # ── Labels ────────────────────────────────────────────────────────────
@@ -18,13 +18,18 @@ class Layout:
         self.hope_counter_pos = (half + half // 2, 80)
 
         # ── Gem grid origins ──────────────────────────────────────────────────
-        # Top-left corner of the first gem slot in each grid.
-        # Grids are horizontally centred within their half of the screen.
+        # Gem size is computed to fit gem_cols gems within one screen half,
+        # with a small margin on each side. config.GEM_DISPLAY_SIZE is the
+        # preferred size — we only shrink, never grow beyond it.
         self.gem_cols = 6   # Gems per row before wrapping to a new row
-        grid_w        = self.gem_cols * pad
+        _margin       = 8   # Pixels of padding on each side of the grid
+        _available    = half - (_margin * 2)
+        self.gem_size = min(config.GEM_DISPLAY_SIZE, _available // self.gem_cols)
+
+        grid_w        = self.gem_cols * self.gem_size
         fear_x        = (half - grid_w) // 2
         hope_x        = half + (half - grid_w) // 2
-        grid_y        = h // 2 - pad // 2   # Vertically centred in lower portion
+        grid_y        = h // 2 - self.gem_size  # Vertically centred in lower portion
 
         self.fear_grid_origin = (fear_x, grid_y)
         self.hope_grid_origin = (hope_x, grid_y)
@@ -49,9 +54,8 @@ class Layout:
         origin = self.fear_grid_origin if gem_type == 'fear' else self.hope_grid_origin
         col    = index % self.gem_cols
         row    = index // self.gem_cols
-        size   = config.GEM_DISPLAY_SIZE
-        x      = origin[0] + col * size
-        y      = origin[1] + row * size
+        x      = origin[0] + col * self.gem_size
+        y      = origin[1] + row * self.gem_size
         return (x, y)
 
     def animated_gem_index(self, count: int, delta: int) -> int:

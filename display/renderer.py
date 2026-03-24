@@ -40,19 +40,13 @@ class Renderer:
         self._draw_gem_grid('fear', game_state.fear, self.fear_anim)
         self._draw_gem_grid('hope', game_state.hope, self.hope_anim)
         self._draw_hints()
-        pygame.display.flip()
 
     # ── Layout elements ───────────────────────────────────────────────────────
 
     def _draw_divider(self):
         x = self.layout.divider_x
-        pygame.draw.line(
-            self.screen,
-            _COLOR_DIVIDER,
-            (x, 10),
-            (x, config.SCREEN_HEIGHT - 10),
-            1,
-        )
+        h = self.screen.get_height()
+        pygame.draw.line(self.screen, _COLOR_DIVIDER, (x, 10), (x, h - 10), 1)
 
     def _draw_labels(self):
         fear_surf = self.font_small.render('F E A R', True, config.COLOR_FEAR_TEXT)
@@ -81,12 +75,12 @@ class Renderer:
             self._hope_flash -= 1
 
     def _draw_hints(self):
-        hint = self.font_small.render(
-            '\u2191 / \u2193 Fear       \u2192 / \u2190 Hope       [R] Reset',
-            True,
-            config.COLOR_UI_MUTED,
-        )
-        self._blit_centred(hint, self.layout.hint_pos)
+        h        = self.screen.get_height()
+        line1    = self.font_small.render('\u2191/\u2193 Fear   \u2192/\u2190 Hope   [R] Reset', True, config.COLOR_UI_MUTED)
+        line2    = self.font_small.render('[Q] Quit', True, config.COLOR_UI_MUTED)
+        cx       = self.screen.get_width() // 2
+        self._blit_centred(line1, (cx, h - 30))
+        self._blit_centred(line2, (cx, h - 12))
 
     # ── Gem grid ──────────────────────────────────────────────────────────────
 
@@ -131,7 +125,7 @@ class Renderer:
         for animated slots, but static filled/empty slots will still use this
         until per-slot sprite support is added.
         """
-        size    = config.GEM_DISPLAY_SIZE
+        size    = self.layout.gem_size
         surface = pygame.Surface((size, size), pygame.SRCALPHA)
         cx, cy  = size // 2, size // 2
         margin  = size // 6

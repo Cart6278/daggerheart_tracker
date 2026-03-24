@@ -10,27 +10,27 @@ from display.renderer import Renderer
 def main():
     pygame.init()
 
-    flags = pygame.FULLSCREEN if config.FULLSCREEN else 0
+    flags = pygame.FULLSCREEN if config.FULLSCREEN else (pygame.RESIZABLE if config.RESIZABLE else 0)
     screen = pygame.display.set_mode(
         (config.SCREEN_WIDTH, config.SCREEN_HEIGHT), flags
     )
     pygame.display.set_caption('Daggerheart Fear Tracker')
     clock = pygame.time.Clock()
 
-    state          = GameState()
-    layout         = Layout()
-    input_handler  = InputHandler()
-    fear_anim      = GemAnimator(
+    state         = GameState()
+    layout        = Layout(*screen.get_size())
+    input_handler = InputHandler()
+    fear_anim     = GemAnimator(
         'assets/sprites/fear_gem.png',
         config.ANIM_APPEAR_FRAMES,
         config.GEM_NATIVE_SIZE,
     )
-    hope_anim      = GemAnimator(
+    hope_anim     = GemAnimator(
         'assets/sprites/hope_gem.png',
         config.ANIM_APPEAR_FRAMES,
         config.GEM_NATIVE_SIZE,
     )
-    renderer       = Renderer(screen, layout, fear_anim, hope_anim)
+    renderer      = Renderer(screen, layout, fear_anim, hope_anim)
 
     running = True
     while running:
@@ -62,14 +62,18 @@ def main():
 
         # ── Draw ──────────────────────────────────────────────────────────────
         renderer.draw(state)
+        pygame.display.flip()
 
         # ── Cap framerate ─────────────────────────────────────────────────────
         clock.tick(config.FPS)
 
-        # ── Handle window close (laptop dev only) ─────────────────────────────
+        # ── Handle window close and resize ────────────────────────────────────
         for event in events:
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.WINDOWRESIZED:
+                layout           = Layout(event.x, event.y)
+                renderer.layout  = layout
 
     pygame.quit()
 
