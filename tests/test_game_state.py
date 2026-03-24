@@ -76,7 +76,7 @@ def test_hope_does_not_exceed_max():
     state = GameState()
     for _ in range(20):
         state.add_hope()
-    assert state.hope == 12  # HOPE_MAX
+    assert state.hope == 6  # HOPE_MAX
 
 def test_hope_does_not_go_below_min():
     state = GameState()

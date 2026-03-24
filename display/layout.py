@@ -21,15 +21,17 @@ class Layout:
         # Gem size is computed to fit gem_cols gems within one screen half,
         # with a small margin on each side. config.GEM_DISPLAY_SIZE is the
         # preferred size — we only shrink, never grow beyond it.
-        self.gem_cols = 6   # Gems per row before wrapping to a new row
-        _margin       = 8   # Pixels of padding on each side of the grid
-        _available    = half - (_margin * 2)
-        self.gem_size = min(config.GEM_DISPLAY_SIZE, _available // self.gem_cols)
+        _margin        = 8   # Pixels of padding on each side of the grid
+        _available     = half - (_margin * 2)
+        self.gem_size  = config.GEM_DISPLAY_SIZE
+        self.gem_cols  = config.GEM_COLS_MAX
+        while self.gem_cols > 2 and self.gem_cols * self.gem_size > _available:
+            self.gem_cols -= 2
 
         grid_w        = self.gem_cols * self.gem_size
         fear_x        = (half - grid_w) // 2
         hope_x        = half + (half - grid_w) // 2
-        grid_y        = h // 2 - self.gem_size  # Vertically centred in lower portion
+        grid_y        = self.fear_counter_pos[1] + 50  # Anchored below counters
 
         self.fear_grid_origin = (fear_x, grid_y)
         self.hope_grid_origin = (hope_x, grid_y)

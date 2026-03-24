@@ -15,6 +15,7 @@ def main():
         (config.SCREEN_WIDTH, config.SCREEN_HEIGHT), flags
     )
     pygame.display.set_caption('Daggerheart Fear Tracker')
+    pygame.display.set_min_size(config.SCREEN_MIN_WIDTH, config.SCREEN_MIN_HEIGHT)
     clock = pygame.time.Clock()
 
     state         = GameState()
