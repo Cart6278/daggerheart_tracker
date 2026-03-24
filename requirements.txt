@@ -1,0 +1,4 @@
+pygame
+
+# Optional — only required when running on Raspberry Pi hardware
+# RPi.GPIO
