@@ -45,8 +45,13 @@ class Renderer:
 
     def _draw_divider(self):
         x = self.layout.divider_x
-        h = self.screen.get_height()
-        pygame.draw.line(self.screen, _COLOR_DIVIDER, (x, 10), (x, h - 10), 1)
+        pygame.draw.line(
+            self.screen,
+            _COLOR_DIVIDER,
+            (x, self.layout.divider_top),
+            (x, self.layout.divider_bottom),
+            1,
+        )
 
     def _draw_labels(self):
         fear_surf = self.font_small.render('F E A R', True, config.COLOR_FEAR_TEXT)
@@ -75,12 +80,12 @@ class Renderer:
             self._hope_flash -= 1
 
     def _draw_hints(self):
-        h        = self.screen.get_height()
-        line1    = self.font_small.render('\u2191/\u2193 Fear   \u2192/\u2190 Hope   [R] Reset', True, config.COLOR_UI_MUTED)
-        line2    = self.font_small.render('[Q] Quit', True, config.COLOR_UI_MUTED)
-        cx       = self.screen.get_width() // 2
-        self._blit_centred(line1, (cx, h - 30))
-        self._blit_centred(line2, (cx, h - 12))
+        hint = self.font_small.render(
+            '\u2191/\u2193 Fear   \u2192/\u2190 Hope   [R] Reset   [Q] Quit',
+            True,
+            config.COLOR_UI_MUTED,
+        )
+        self._blit_centred(hint, self.layout.hint_pos)
 
     # ── Gem grid ──────────────────────────────────────────────────────────────
 

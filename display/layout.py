@@ -39,8 +39,11 @@ class Layout:
         self.hint_pos = (w // 2, h - 20)
 
         # ── Divider ───────────────────────────────────────────────────────────
-        # Centre line separating Fear and Hope halves
-        self.divider_x = half
+        # Centre line separating Fear and Hope halves.
+        # Starts below the counters, ends above the hint text.
+        self.divider_x      = half
+        self.divider_top    = self.fear_counter_pos[1] + 40
+        self.divider_bottom = self.hint_pos[1]         - 40
 
     # ── Gem position helpers ──────────────────────────────────────────────────
 
