@@ -24,8 +24,8 @@ ANIM_FRAME_DURATION = 60  # Milliseconds per frame (60ms = ~16fps for animation)
 
 # ── Colors (RGB tuples) ───────────────────────────────────────────────────────
 COLOR_BG        = ( 18,  10,  30)  # Near-black background
-COLOR_FEAR_TEXT = ( 46, 139, 122)  # Teal for fear label and counter
-COLOR_HOPE_TEXT = (201, 168,  76)  # Gold for hope label and counter
+COLOR_FEAR_TEXT = (174, 232,   4)  # Lime green for fear label and counter
+COLOR_HOPE_TEXT = (204,   8, 138)  # Magenta for hope label and counter
 COLOR_UI_MUTED  = (122, 107, 138)  # Muted purple for hint text
 
 # ── Input: Keyboard (development / laptop) ────────────────────────────────────
