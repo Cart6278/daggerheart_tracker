@@ -46,7 +46,7 @@ daggerheart_tracker/
 │      7    ◄────── counter ────────►    4                │
 │                                                         │
 │  ◆ ◆ ◆ ◆ ◆ ◆         ◆ ◆ ◆ ◆                          │
-│  ◆ ◇ ◇ ◇ ◇ ◇         ◇ ◇ ◇ ◇ ◇ ◇                      │
+│  ◆ ◇ ◇ ◇ ◇ ◇         ◇ ◇                       │
 │  ↑ filled  ↑ empty   ↑ filled  ↑ empty                 │
 │                                                         │
 │            ↑/↓ Fear   →/← Hope   [R] Reset             │
