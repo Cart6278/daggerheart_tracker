@@ -1,9 +1,9 @@
 # ── Display ──────────────────────────────────────────────────────────────────
-SCREEN_WIDTH  = 480    # Change to match final display (e.g. 800)
-SCREEN_HEIGHT = 320    # Change to match final display (e.g. 480)
-FPS           = 30     # Frames per second — 30 is smooth, 60 unnecessary
-FULLSCREEN    = False  # Set True on Pi; False during laptop development
-RESIZABLE     = True   # Allow window resizing during laptop development; set False on Pi
+SCREEN_WIDTH  = 480    # Change to match final display pixel size (e.g. 800)
+SCREEN_HEIGHT = 320    # Change to match final display pixel size (e.g. 480)
+FPS           = 30     # Frames per second, adjust as needed for performance and animation smoothness
+FULLSCREEN    = False  # Set True on Pi; False during laptop development/deployment
+RESIZABLE     = True   # Allow window resizing during laptop development/deployment; set False on Pi
 
 # ── Sprite scaling ────────────────────────────────────────────────────────────
 GEM_NATIVE_SIZE  = 32                          # Native pixel art size (32x32 per frame)
@@ -14,7 +14,7 @@ GEM_DISPLAY_SIZE = GEM_NATIVE_SIZE * GEM_SCALE # = 96px rendered size
 FEAR_MIN = 0
 FEAR_MAX = 12  # Daggerheart standard maximum
 HOPE_MIN = 0
-HOPE_MAX = 12
+HOPE_MAX = 6  # Daggerheart standard maximum
 
 # ── Animation ─────────────────────────────────────────────────────────────────
 ANIM_APPEAR_FRAMES  = 8   # Number of frames in the 'gem appears' animation
