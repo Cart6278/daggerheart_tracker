@@ -65,13 +65,14 @@ The display is split into two vertical halves — Fear (left, gold) and Hope (ri
 
 ### 1. Prerequisites
 
-- Python 3.10 or later — [python.org](https://www.python.org/downloads/)
+- Python 3.12 or later — [python.org](https://www.python.org/downloads/)
 - VSCode with the **Python** extension installed
 
 ### 2. Create a virtual environment
 
 Open the project folder in VSCode, then open the integrated terminal (`Ctrl+`` `).
 
+**Windows** (PowerShell):
 ```powershell
 python -m venv .venv
 .venv\Scripts\activate
@@ -82,6 +83,20 @@ pip install -r requirements.txt
 > add the project folder to Windows Defender's exclusion list:
 > **Windows Security → Virus & threat protection → Exclusions → Add folder**
 > then re-run the commands above.
+
+**macOS** (Terminal, using Homebrew):
+
+First, ensure Python is installed via Homebrew:
+```bash
+brew install python
+```
+
+Then create and activate the virtual environment:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
 ### 3. Select the interpreter in VSCode
 

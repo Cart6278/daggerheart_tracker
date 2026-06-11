@@ -5,6 +5,7 @@ FPS           = 30     # Frames per second — 30 is smooth, 60 unnecessary
 FULLSCREEN    = False  # Set True on Pi; False during laptop development
 RESIZABLE     = True   # Allow window resizing during laptop development; set False on Pi
 
+
 # ── Sprite scaling ────────────────────────────────────────────────────────────
 GEM_NATIVE_SIZE  = 32                          # Native pixel art size (32x32 per frame)
 GEM_SCALE        = 3                           # Scale multiplier — nearest-neighbor (keeps pixel look)
