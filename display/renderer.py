@@ -33,12 +33,14 @@ class Renderer:
 
     def draw(self, game_state):
         self.screen.fill(config.COLOR_BG)
-        self._draw_divider()
+        if not config.HIDE_HOPE:
+            self._draw_divider()
         self._draw_labels()
         self._update_flash(game_state)
         self._draw_counters(game_state)
         self._draw_gem_grid('fear', game_state.fear, self.fear_anim)
-        self._draw_gem_grid('hope', game_state.hope, self.hope_anim)
+        if not config.HIDE_HOPE:
+            self._draw_gem_grid('hope', game_state.hope, self.hope_anim)
         self._draw_hints()
 
     # ── Layout elements ───────────────────────────────────────────────────────
@@ -55,9 +57,10 @@ class Renderer:
 
     def _draw_labels(self):
         fear_surf = self.font_small.render('F E A R', True, config.COLOR_FEAR_TEXT)
-        hope_surf = self.font_small.render('H O P E', True, config.COLOR_HOPE_TEXT)
         self._blit_centred(fear_surf, self.layout.fear_label_pos)
-        self._blit_centred(hope_surf, self.layout.hope_label_pos)
+        if not config.HIDE_HOPE:
+            hope_surf = self.font_small.render('H O P E', True, config.COLOR_HOPE_TEXT)
+            self._blit_centred(hope_surf, self.layout.hope_label_pos)
 
     def _update_flash(self, game_state):
         if game_state.fear_changed:
@@ -80,11 +83,11 @@ class Renderer:
             self._hope_flash -= 1
 
     def _draw_hints(self):
-        hint = self.font_small.render(
-            '\u2191/\u2193 Fear   \u2192/\u2190 Hope   [R] Reset   [Q] Quit',
-            True,
-            config.COLOR_UI_MUTED,
-        )
+        if config.HIDE_HOPE:
+            hint_text = '\u2191/\u2193 Fear   [R] Reset   [Q] Quit'
+        else:
+            hint_text = '\u2191/\u2193 Fear   \u2192/\u2190 Hope   [R] Reset   [Q] Quit'
+        hint = self.font_small.render(hint_text, True, config.COLOR_UI_MUTED)
         self._blit_centred(hint, self.layout.hint_pos)
 
     # ── Gem grid ──────────────────────────────────────────────────────────────

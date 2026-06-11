@@ -23,11 +23,26 @@ ANIM_APPEAR_FRAMES  = 8   # Number of frames in the 'gem appears' animation
 ANIM_VANISH_FRAMES  = 8   # Number of frames in the 'gem vanishes' animation
 ANIM_FRAME_DURATION = 60  # Milliseconds per frame (60ms = ~16fps for animation)
 
+# ── Display mode ──────────────────────────────────────────────────────────────
+GRAYSCALE_MODE  = False  # Set True for e-ink / liquid-ink displays
+HIDE_HOPE       = False  # Set True to display only Fear tracker
+SHOW_STARTUP_MENU = True # Show menu on launch to configure display modes
+
 # ── Colors (RGB tuples) ───────────────────────────────────────────────────────
-COLOR_BG        = ( 18,  10,  30)  # Near-black background
-COLOR_FEAR_TEXT = (174, 232,   4)  # Lime green for fear label and counter
-COLOR_HOPE_TEXT = (204,   8, 138)  # Magenta for hope label and counter
-COLOR_UI_MUTED  = (122, 107, 138)  # Muted purple for hint text
+_COLOR_BG_COLOR        = ( 18,  10,  30)
+_COLOR_FEAR_TEXT_COLOR = (174, 232,   4)
+_COLOR_HOPE_TEXT_COLOR = ( 50, 150, 200)
+_COLOR_UI_MUTED_COLOR  = (122, 107, 138)
+
+_COLOR_BG_GRAY        = ( 00,  00,  00)  # Black
+_COLOR_FEAR_TEXT_GRAY = (125, 125, 125)  # Dark gray
+_COLOR_HOPE_TEXT_GRAY = (225, 225, 225)  # White — hope counter
+_COLOR_UI_MUTED_GRAY  = (170, 170, 170)  # Light gray hint text
+
+COLOR_BG        = _COLOR_BG_GRAY        if GRAYSCALE_MODE else _COLOR_BG_COLOR
+COLOR_FEAR_TEXT = _COLOR_FEAR_TEXT_GRAY if GRAYSCALE_MODE else _COLOR_FEAR_TEXT_COLOR
+COLOR_HOPE_TEXT = _COLOR_HOPE_TEXT_GRAY if GRAYSCALE_MODE else _COLOR_HOPE_TEXT_COLOR
+COLOR_UI_MUTED  = _COLOR_UI_MUTED_GRAY  if GRAYSCALE_MODE else _COLOR_UI_MUTED_COLOR
 
 # ── Input: Keyboard (development / laptop) ────────────────────────────────────
 KEY_FEAR_ADD      = 'up'
