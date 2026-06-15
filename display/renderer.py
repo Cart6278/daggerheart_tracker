@@ -70,12 +70,13 @@ class Renderer:
 
     def _draw_counters(self, game_state):
         fear_color = _COLOR_FLASH if self._fear_flash > 0 else config.COLOR_FEAR_TEXT
-        hope_color = _COLOR_FLASH if self._hope_flash > 0 else config.COLOR_HOPE_TEXT
-
         fear_surf = self.font_large.render(str(game_state.fear), True, fear_color)
-        hope_surf = self.font_large.render(str(game_state.hope), True, hope_color)
         self._blit_centred(fear_surf, self.layout.fear_counter_pos)
-        self._blit_centred(hope_surf, self.layout.hope_counter_pos)
+
+        if not config.HIDE_HOPE:
+            hope_color = _COLOR_FLASH if self._hope_flash > 0 else config.COLOR_HOPE_TEXT
+            hope_surf = self.font_large.render(str(game_state.hope), True, hope_color)
+            self._blit_centred(hope_surf, self.layout.hope_counter_pos)
 
         if self._fear_flash > 0:
             self._fear_flash -= 1
