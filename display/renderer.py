@@ -4,8 +4,6 @@ import config
 
 
 # ── Fallback colors for when sprite assets are not yet available ──────────────
-_COLOR_FEAR_GEM_FILLED  = config.COLOR_FEAR_TEXT          # Gold
-_COLOR_HOPE_GEM_FILLED  = config.COLOR_HOPE_TEXT          # Teal
 _COLOR_GEM_EMPTY        = ( 40,  34,  52)                 # Very dark purple
 _COLOR_GEM_EMPTY_BORDER = ( 80,  68, 100)                 # Muted purple outline
 _COLOR_DIVIDER          = ( 50,  40,  70)                 # Subtle divider line
@@ -96,7 +94,7 @@ class Renderer:
     def _draw_gem_grid(self, gem_type, count, animator):
         max_gems      = config.FEAR_MAX if gem_type == 'fear' else config.HOPE_MAX
         anim_index    = self.layout.animated_gem_index(count, animator.pending_delta)
-        filled_color  = _COLOR_FEAR_GEM_FILLED if gem_type == 'fear' else _COLOR_HOPE_GEM_FILLED
+        filled_color  = config.COLOR_FEAR_TEXT if gem_type == 'fear' else config.COLOR_HOPE_TEXT
 
         for i in range(max_gems):
             pos     = self.layout.gem_position(gem_type, i)
