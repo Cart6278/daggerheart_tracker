@@ -26,6 +26,11 @@ class InputHandler:
             getattr(pygame, f'K_{config.KEY_HOPE_SUBTRACT}', pygame.K_LEFT):  'HOPE_SUBTRACT',
             getattr(pygame, f'K_{config.KEY_RESET}',         pygame.K_r):     'RESET',
             getattr(pygame, f'K_{config.KEY_QUIT}',          pygame.K_q):     'QUIT',
+            # WASD alternatives
+            pygame.K_w: 'FEAR_ADD',
+            pygame.K_s: 'FEAR_SUBTRACT',
+            pygame.K_d: 'HOPE_ADD',
+            pygame.K_a: 'HOPE_SUBTRACT',
         }
 
         actions = []

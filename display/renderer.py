@@ -4,8 +4,6 @@ import config
 
 
 # ── Fallback colors for when sprite assets are not yet available ──────────────
-_COLOR_FEAR_GEM_FILLED  = config.COLOR_FEAR_TEXT          # Gold
-_COLOR_HOPE_GEM_FILLED  = config.COLOR_HOPE_TEXT          # Teal
 _COLOR_GEM_EMPTY        = ( 40,  34,  52)                 # Very dark purple
 _COLOR_GEM_EMPTY_BORDER = ( 80,  68, 100)                 # Muted purple outline
 _COLOR_DIVIDER          = ( 50,  40,  70)                 # Subtle divider line
@@ -33,26 +31,34 @@ class Renderer:
 
     def draw(self, game_state):
         self.screen.fill(config.COLOR_BG)
-        self._draw_divider()
+        if not config.HIDE_HOPE:
+            self._draw_divider()
         self._draw_labels()
         self._update_flash(game_state)
         self._draw_counters(game_state)
         self._draw_gem_grid('fear', game_state.fear, self.fear_anim)
-        self._draw_gem_grid('hope', game_state.hope, self.hope_anim)
+        if not config.HIDE_HOPE:
+            self._draw_gem_grid('hope', game_state.hope, self.hope_anim)
         self._draw_hints()
 
     # ── Layout elements ───────────────────────────────────────────────────────
 
     def _draw_divider(self):
         x = self.layout.divider_x
-        h = self.screen.get_height()
-        pygame.draw.line(self.screen, _COLOR_DIVIDER, (x, 10), (x, h - 10), 1)
+        pygame.draw.line(
+            self.screen,
+            _COLOR_DIVIDER,
+            (x, self.layout.divider_top),
+            (x, self.layout.divider_bottom),
+            1,
+        )
 
     def _draw_labels(self):
         fear_surf = self.font_small.render('F E A R', True, config.COLOR_FEAR_TEXT)
-        hope_surf = self.font_small.render('H O P E', True, config.COLOR_HOPE_TEXT)
         self._blit_centred(fear_surf, self.layout.fear_label_pos)
-        self._blit_centred(hope_surf, self.layout.hope_label_pos)
+        if not config.HIDE_HOPE:
+            hope_surf = self.font_small.render('H O P E', True, config.COLOR_HOPE_TEXT)
+            self._blit_centred(hope_surf, self.layout.hope_label_pos)
 
     def _update_flash(self, game_state):
         if game_state.fear_changed:
@@ -62,12 +68,13 @@ class Renderer:
 
     def _draw_counters(self, game_state):
         fear_color = _COLOR_FLASH if self._fear_flash > 0 else config.COLOR_FEAR_TEXT
-        hope_color = _COLOR_FLASH if self._hope_flash > 0 else config.COLOR_HOPE_TEXT
-
         fear_surf = self.font_large.render(str(game_state.fear), True, fear_color)
-        hope_surf = self.font_large.render(str(game_state.hope), True, hope_color)
         self._blit_centred(fear_surf, self.layout.fear_counter_pos)
-        self._blit_centred(hope_surf, self.layout.hope_counter_pos)
+
+        if not config.HIDE_HOPE:
+            hope_color = _COLOR_FLASH if self._hope_flash > 0 else config.COLOR_HOPE_TEXT
+            hope_surf = self.font_large.render(str(game_state.hope), True, hope_color)
+            self._blit_centred(hope_surf, self.layout.hope_counter_pos)
 
         if self._fear_flash > 0:
             self._fear_flash -= 1
@@ -75,19 +82,19 @@ class Renderer:
             self._hope_flash -= 1
 
     def _draw_hints(self):
-        h        = self.screen.get_height()
-        line1    = self.font_small.render('\u2191/\u2193 Fear   \u2192/\u2190 Hope   [R] Reset', True, config.COLOR_UI_MUTED)
-        line2    = self.font_small.render('[Q] Quit', True, config.COLOR_UI_MUTED)
-        cx       = self.screen.get_width() // 2
-        self._blit_centred(line1, (cx, h - 30))
-        self._blit_centred(line2, (cx, h - 12))
+        if config.HIDE_HOPE:
+            hint_text = '\u2191/\u2193 Fear   [R] Reset   [Q] Quit'
+        else:
+            hint_text = '\u2191/\u2193 Fear   \u2192/\u2190 Hope   [R] Reset   [Q] Quit'
+        hint = self.font_small.render(hint_text, True, config.COLOR_UI_MUTED)
+        self._blit_centred(hint, self.layout.hint_pos)
 
     # ── Gem grid ──────────────────────────────────────────────────────────────
 
     def _draw_gem_grid(self, gem_type, count, animator):
         max_gems      = config.FEAR_MAX if gem_type == 'fear' else config.HOPE_MAX
         anim_index    = self.layout.animated_gem_index(count, animator.pending_delta)
-        filled_color  = _COLOR_FEAR_GEM_FILLED if gem_type == 'fear' else _COLOR_HOPE_GEM_FILLED
+        filled_color  = config.COLOR_FEAR_TEXT if gem_type == 'fear' else config.COLOR_HOPE_TEXT
 
         for i in range(max_gems):
             pos     = self.layout.gem_position(gem_type, i)

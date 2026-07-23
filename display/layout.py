@@ -7,29 +7,34 @@ class Layout:
         h    = h or config.SCREEN_HEIGHT
         half = w // 2
 
+        # In Fear Only mode, fear occupies the full width
+        fear_width = w if config.HIDE_HOPE else half
+
         # ── Labels ────────────────────────────────────────────────────────────
         # Sit near the top of each half, horizontally centred
-        self.fear_label_pos = (half // 2,          30)
-        self.hope_label_pos = (half + half // 2,   30)
+        self.fear_label_pos = (fear_width // 2,        30)
+        self.hope_label_pos = (half + half // 2,       30)
 
         # ── Counters ──────────────────────────────────────────────────────────
         # Large numeric display, below the label
-        self.fear_counter_pos = (half // 2,        80)
-        self.hope_counter_pos = (half + half // 2, 80)
+        self.fear_counter_pos = (fear_width // 2,      80)
+        self.hope_counter_pos = (half + half // 2,     80)
 
         # ── Gem grid origins ──────────────────────────────────────────────────
-        # Gem size is computed to fit gem_cols gems within one screen half,
+        # Gem size is computed to fit gem_cols gems within the fear region,
         # with a small margin on each side. config.GEM_DISPLAY_SIZE is the
         # preferred size — we only shrink, never grow beyond it.
-        self.gem_cols = 6   # Gems per row before wrapping to a new row
-        _margin       = 8   # Pixels of padding on each side of the grid
-        _available    = half - (_margin * 2)
-        self.gem_size = min(config.GEM_DISPLAY_SIZE, _available // self.gem_cols)
+        _margin        = 8   # Pixels of padding on each side of the grid
+        _available     = fear_width - (_margin * 2)
+        self.gem_size  = config.GEM_DISPLAY_SIZE
+        self.gem_cols  = config.GEM_COLS_MAX
+        while self.gem_cols > 2 and self.gem_cols * self.gem_size > _available:
+            self.gem_cols -= 2
 
         grid_w        = self.gem_cols * self.gem_size
-        fear_x        = (half - grid_w) // 2
+        fear_x        = (fear_width - grid_w) // 2
         hope_x        = half + (half - grid_w) // 2
-        grid_y        = h // 2 - self.gem_size  # Vertically centred in lower portion
+        grid_y        = self.fear_counter_pos[1] + 50  # Anchored below counters
 
         self.fear_grid_origin = (fear_x, grid_y)
         self.hope_grid_origin = (hope_x, grid_y)
@@ -39,8 +44,11 @@ class Layout:
         self.hint_pos = (w // 2, h - 20)
 
         # ── Divider ───────────────────────────────────────────────────────────
-        # Centre line separating Fear and Hope halves
-        self.divider_x = half
+        # Centre line separating Fear and Hope halves.
+        # Starts below the counters, ends above the hint text.
+        self.divider_x      = half
+        self.divider_top    = self.fear_counter_pos[1] + 40
+        self.divider_bottom = self.hint_pos[1]         - 40
 
     # ── Gem position helpers ──────────────────────────────────────────────────
 
